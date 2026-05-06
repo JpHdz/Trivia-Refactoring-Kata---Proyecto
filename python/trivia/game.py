@@ -1,6 +1,10 @@
 from typing import List
 from .igame import IGame
 
+class Player:
+    def __init__(self, name: str):
+        self.name = name
+
 class Game(IGame):
     BOARD_SIZE = 12
     WINNING_COINS = 6
@@ -35,7 +39,7 @@ class Game(IGame):
         self.positions[self.how_many_players()] = 1
         self.coins[self.how_many_players()] = 0
         self.in_penalty_box[self.how_many_players()] = False
-        self.players.append(player_name)
+        self.players.append(Player(player_name))
 
         print(f"{player_name} was added")
         print(f"They are player number {len(self.players)}")
@@ -45,16 +49,16 @@ class Game(IGame):
         return len(self.players)
 
     def roll(self, roll: int) -> None:
-        print(f"{self.players[self.current_player]} is the current player")
+        print(f"{self.players[self.current_player].name} is the current player")
         print(f"They have rolled a {roll}")
 
         if self.in_penalty_box[self.current_player]:
             if roll % 2 != 0:
                 self.is_getting_out_of_penalty_box = True
-                print(f"{self.players[self.current_player]} is getting out of the penalty box")
+                print(f"{self.players[self.current_player].name} is getting out of the penalty box")
                 self._move_player_and_ask_question(roll)
             else:
-                print(f"{self.players[self.current_player]} is not getting out of the penalty box")
+                print(f"{self.players[self.current_player].name} is not getting out of the penalty box")
                 self.is_getting_out_of_penalty_box = False
         else:
             self._move_player_and_ask_question(roll)
@@ -64,7 +68,7 @@ class Game(IGame):
         if self.positions[self.current_player] > self.BOARD_SIZE:
             self.positions[self.current_player] = self.positions[self.current_player] - self.BOARD_SIZE
 
-        print(f"{self.players[self.current_player]}'s new location is {self.positions[self.current_player]}")
+        print(f"{self.players[self.current_player].name}'s new location is {self.positions[self.current_player]}")
         print(f"The category is {self.current_category()}")
         self.ask_question()
 
@@ -95,7 +99,7 @@ class Game(IGame):
             if self.is_getting_out_of_penalty_box:
                 print("Answer was correct!!!!")
                 self.coins[self.current_player] += 1
-                print(f"{self.players[self.current_player]} now has {self.coins[self.current_player]} Gold Coins.")
+                print(f"{self.players[self.current_player].name} now has {self.coins[self.current_player]} Gold Coins.")
 
                 winner = self.did_player_win()
                 self._next_player()
@@ -107,7 +111,7 @@ class Game(IGame):
         else:
             print("Answer was corrent!!!!")
             self.coins[self.current_player] += 1
-            print(f"{self.players[self.current_player]} now has {self.coins[self.current_player]} Gold Coins.")
+            print(f"{self.players[self.current_player].name} now has {self.coins[self.current_player]} Gold Coins.")
 
             winner = self.did_player_win()
             self._next_player()
@@ -116,7 +120,7 @@ class Game(IGame):
 
     def wrong_answer(self) -> bool:
         print("Question was incorrectly answered")
-        print(f"{self.players[self.current_player]} was sent to the penalty box")
+        print(f"{self.players[self.current_player].name} was sent to the penalty box")
         self.in_penalty_box[self.current_player] = True
 
         self._next_player()
