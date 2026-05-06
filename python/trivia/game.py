@@ -112,7 +112,7 @@ class Game(IGame):
                 self._next_player()
                 return True
         else:
-            print("Answer was corrent!!!!")
+            print("Answer was correct!!!!")
             player.coins += 1
             print(f"{player.name} now has {player.coins} Gold Coins.")
 
