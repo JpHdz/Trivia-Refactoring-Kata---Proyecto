@@ -52,24 +52,21 @@ class Game(IGame):
             if roll % 2 != 0:
                 self.is_getting_out_of_penalty_box = True
                 print(f"{self.players[self.current_player]} is getting out of the penalty box")
-                self.positions[self.current_player] = self.positions[self.current_player] + roll
-                if self.positions[self.current_player] > self.BOARD_SIZE:
-                    self.positions[self.current_player] = self.positions[self.current_player] - self.BOARD_SIZE
-
-                print(f"{self.players[self.current_player]}'s new location is {self.positions[self.current_player]}")
-                print(f"The category is {self.current_category()}")
-                self.ask_question()
+                self._move_player_and_ask_question(roll)
             else:
                 print(f"{self.players[self.current_player]} is not getting out of the penalty box")
                 self.is_getting_out_of_penalty_box = False
         else:
-            self.positions[self.current_player] = self.positions[self.current_player] + roll
-            if self.positions[self.current_player] > self.BOARD_SIZE:
-                self.positions[self.current_player] = self.positions[self.current_player] - self.BOARD_SIZE
+            self._move_player_and_ask_question(roll)
 
-            print(f"{self.players[self.current_player]}'s new location is {self.positions[self.current_player]}")
-            print(f"The category is {self.current_category()}")
-            self.ask_question()
+    def _move_player_and_ask_question(self, roll: int) -> None:
+        self.positions[self.current_player] = self.positions[self.current_player] + roll
+        if self.positions[self.current_player] > self.BOARD_SIZE:
+            self.positions[self.current_player] = self.positions[self.current_player] - self.BOARD_SIZE
+
+        print(f"{self.players[self.current_player]}'s new location is {self.positions[self.current_player]}")
+        print(f"The category is {self.current_category()}")
+        self.ask_question()
 
     def ask_question(self) -> None:
         if self.current_category() == "Pop":
@@ -101,15 +98,11 @@ class Game(IGame):
                 print(f"{self.players[self.current_player]} now has {self.coins[self.current_player]} Gold Coins.")
 
                 winner = self.did_player_win()
-                self.current_player += 1
-                if self.current_player == len(self.players):
-                    self.current_player = 0
+                self._next_player()
 
                 return winner
             else:
-                self.current_player += 1
-                if self.current_player == len(self.players):
-                    self.current_player = 0
+                self._next_player()
                 return True
         else:
             print("Answer was corrent!!!!")
@@ -117,9 +110,7 @@ class Game(IGame):
             print(f"{self.players[self.current_player]} now has {self.coins[self.current_player]} Gold Coins.")
 
             winner = self.did_player_win()
-            self.current_player += 1
-            if self.current_player == len(self.players):
-                self.current_player = 0
+            self._next_player()
 
             return winner
 
@@ -128,10 +119,13 @@ class Game(IGame):
         print(f"{self.players[self.current_player]} was sent to the penalty box")
         self.in_penalty_box[self.current_player] = True
 
+        self._next_player()
+        return True
+
+    def _next_player(self) -> None:
         self.current_player += 1
         if self.current_player == len(self.players):
             self.current_player = 0
-        return True
 
     def did_player_win(self) -> bool:
         return not (self.coins[self.current_player] == self.WINNING_COINS)
