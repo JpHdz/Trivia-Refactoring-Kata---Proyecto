@@ -4,6 +4,9 @@ from .igame import IGame
 class Player:
     def __init__(self, name: str):
         self.name = name
+        self.position = 1
+        self.coins = 0
+        self.in_penalty_box = False
 
 class Game(IGame):
     BOARD_SIZE = 12
@@ -11,9 +14,6 @@ class Game(IGame):
 
     def __init__(self):
         self.players = []
-        self.positions = [0] * 6
-        self.coins = [0] * 6
-        self.in_penalty_box = [False] * 6
 
         self.pop_questions = []
         self.science_questions = []
@@ -36,9 +36,6 @@ class Game(IGame):
         return self.how_many_players() >= 2
 
     def add(self, player_name: str) -> bool:
-        self.positions[self.how_many_players()] = 1
-        self.coins[self.how_many_players()] = 0
-        self.in_penalty_box[self.how_many_players()] = False
         self.players.append(Player(player_name))
 
         print(f"{player_name} was added")
@@ -49,59 +46,63 @@ class Game(IGame):
         return len(self.players)
 
     def roll(self, roll: int) -> None:
-        print(f"{self.players[self.current_player].name} is the current player")
+        player = self.players[self.current_player]
+        print(f"{player.name} is the current player")
         print(f"They have rolled a {roll}")
 
-        if self.in_penalty_box[self.current_player]:
+        if player.in_penalty_box:
             if roll % 2 != 0:
                 self.is_getting_out_of_penalty_box = True
-                print(f"{self.players[self.current_player].name} is getting out of the penalty box")
-                self._move_player_and_ask_question(roll)
+                print(f"{player.name} is getting out of the penalty box")
+                self._move_player_and_ask_question(player, roll)
             else:
-                print(f"{self.players[self.current_player].name} is not getting out of the penalty box")
+                print(f"{player.name} is not getting out of the penalty box")
                 self.is_getting_out_of_penalty_box = False
         else:
-            self._move_player_and_ask_question(roll)
+            self._move_player_and_ask_question(player, roll)
 
-    def _move_player_and_ask_question(self, roll: int) -> None:
-        self.positions[self.current_player] = self.positions[self.current_player] + roll
-        if self.positions[self.current_player] > self.BOARD_SIZE:
-            self.positions[self.current_player] = self.positions[self.current_player] - self.BOARD_SIZE
+    def _move_player_and_ask_question(self, player: Player, roll: int) -> None:
+        player.position = player.position + roll
+        if player.position > self.BOARD_SIZE:
+            player.position = player.position - self.BOARD_SIZE
 
-        print(f"{self.players[self.current_player].name}'s new location is {self.positions[self.current_player]}")
-        print(f"The category is {self.current_category()}")
+        print(f"{player.name}'s new location is {player.position}")
+        print(f"The category is {self.current_category(player)}")
         self.ask_question()
 
     def ask_question(self) -> None:
-        if self.current_category() == "Pop":
+        player = self.players[self.current_player]
+        category = self.current_category(player)
+        if category == "Pop":
             print(self.pop_questions.pop(0))
-        if self.current_category() == "Science":
+        if category == "Science":
             print(self.science_questions.pop(0))
-        if self.current_category() == "Sports":
+        if category == "Sports":
             print(self.sports_questions.pop(0))
-        if self.current_category() == "Rock":
+        if category == "Rock":
             print(self.rock_questions.pop(0))
 
-    def current_category(self) -> str:
-        if self.positions[self.current_player] - 1 == 0: return "Pop"
-        if self.positions[self.current_player] - 1 == 4: return "Pop"
-        if self.positions[self.current_player] - 1 == 8: return "Pop"
-        if self.positions[self.current_player] - 1 == 1: return "Science"
-        if self.positions[self.current_player] - 1 == 5: return "Science"
-        if self.positions[self.current_player] - 1 == 9: return "Science"
-        if self.positions[self.current_player] - 1 == 2: return "Sports"
-        if self.positions[self.current_player] - 1 == 6: return "Sports"
-        if self.positions[self.current_player] - 1 == 10: return "Sports"
+    def current_category(self, player: Player) -> str:
+        if player.position - 1 == 0: return "Pop"
+        if player.position - 1 == 4: return "Pop"
+        if player.position - 1 == 8: return "Pop"
+        if player.position - 1 == 1: return "Science"
+        if player.position - 1 == 5: return "Science"
+        if player.position - 1 == 9: return "Science"
+        if player.position - 1 == 2: return "Sports"
+        if player.position - 1 == 6: return "Sports"
+        if player.position - 1 == 10: return "Sports"
         return "Rock"
 
     def handle_correct_answer(self) -> bool:
-        if self.in_penalty_box[self.current_player]:
+        player = self.players[self.current_player]
+        if player.in_penalty_box:
             if self.is_getting_out_of_penalty_box:
                 print("Answer was correct!!!!")
-                self.coins[self.current_player] += 1
-                print(f"{self.players[self.current_player].name} now has {self.coins[self.current_player]} Gold Coins.")
+                player.coins += 1
+                print(f"{player.name} now has {player.coins} Gold Coins.")
 
-                winner = self.did_player_win()
+                winner = self.did_player_win(player)
                 self._next_player()
 
                 return winner
@@ -110,18 +111,19 @@ class Game(IGame):
                 return True
         else:
             print("Answer was corrent!!!!")
-            self.coins[self.current_player] += 1
-            print(f"{self.players[self.current_player].name} now has {self.coins[self.current_player]} Gold Coins.")
+            player.coins += 1
+            print(f"{player.name} now has {player.coins} Gold Coins.")
 
-            winner = self.did_player_win()
+            winner = self.did_player_win(player)
             self._next_player()
 
             return winner
 
     def wrong_answer(self) -> bool:
+        player = self.players[self.current_player]
         print("Question was incorrectly answered")
-        print(f"{self.players[self.current_player].name} was sent to the penalty box")
-        self.in_penalty_box[self.current_player] = True
+        print(f"{player.name} was sent to the penalty box")
+        player.in_penalty_box = True
 
         self._next_player()
         return True
@@ -131,5 +133,5 @@ class Game(IGame):
         if self.current_player == len(self.players):
             self.current_player = 0
 
-    def did_player_win(self) -> bool:
-        return not (self.coins[self.current_player] == self.WINNING_COINS)
+    def did_player_win(self, player: Player) -> bool:
+        return not (player.coins == self.WINNING_COINS)
