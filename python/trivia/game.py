@@ -5,7 +5,7 @@ class Game(IGame):
     def __init__(self):
         self.players = []
         self.positions = [0] * 6
-        self.purses = [0] * 6
+        self.coins = [0] * 6
         self.in_penalty_box = [False] * 6
 
         self.pop_questions = []
@@ -30,7 +30,7 @@ class Game(IGame):
 
     def add(self, player_name: str) -> bool:
         self.positions[self.how_many_players()] = 1
-        self.purses[self.how_many_players()] = 0
+        self.coins[self.how_many_players()] = 0
         self.in_penalty_box[self.how_many_players()] = False
         self.players.append(player_name)
 
@@ -94,8 +94,8 @@ class Game(IGame):
         if self.in_penalty_box[self.current_player]:
             if self.is_getting_out_of_penalty_box:
                 print("Answer was correct!!!!")
-                self.purses[self.current_player] += 1
-                print(f"{self.players[self.current_player]} now has {self.purses[self.current_player]} Gold Coins.")
+                self.coins[self.current_player] += 1
+                print(f"{self.players[self.current_player]} now has {self.coins[self.current_player]} Gold Coins.")
 
                 winner = self.did_player_win()
                 self.current_player += 1
@@ -110,8 +110,8 @@ class Game(IGame):
                 return True
         else:
             print("Answer was corrent!!!!")
-            self.purses[self.current_player] += 1
-            print(f"{self.players[self.current_player]} now has {self.purses[self.current_player]} Gold Coins.")
+            self.coins[self.current_player] += 1
+            print(f"{self.players[self.current_player]} now has {self.coins[self.current_player]} Gold Coins.")
 
             winner = self.did_player_win()
             self.current_player += 1
@@ -131,4 +131,4 @@ class Game(IGame):
         return True
 
     def did_player_win(self) -> bool:
-        return not (self.purses[self.current_player] == 6)
+        return not (self.coins[self.current_player] == 6)
