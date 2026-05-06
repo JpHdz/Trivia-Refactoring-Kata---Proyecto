@@ -54,15 +54,21 @@ class Game(IGame):
         print(f"They have rolled a {roll}")
 
         if player.in_penalty_box:
-            if roll % 2 != 0:
-                self.is_getting_out_of_penalty_box = True
-                print(f"{player.name} is getting out of the penalty box")
-                self._move_player_and_ask_question(player, roll)
-            else:
-                print(f"{player.name} is not getting out of the penalty box")
-                self.is_getting_out_of_penalty_box = False
+            self._handle_penalty_box_turn(player, roll)
         else:
+            self._handle_normal_turn(player, roll)
+
+    def _handle_penalty_box_turn(self, player: Player, roll: int) -> None:
+        if roll % 2 != 0:
+            self.is_getting_out_of_penalty_box = True
+            print(f"{player.name} is getting out of the penalty box")
             self._move_player_and_ask_question(player, roll)
+        else:
+            print(f"{player.name} is not getting out of the penalty box")
+            self.is_getting_out_of_penalty_box = False
+
+    def _handle_normal_turn(self, player: Player, roll: int) -> None:
+        self._move_player_and_ask_question(player, roll)
 
     def _move_player_and_ask_question(self, player: Player, roll: int) -> None:
         player.position = player.position + roll
