@@ -49,6 +49,7 @@ class GameOld(IGame):
             if roll % 2 != 0:
                 self.is_getting_out_of_penalty_box = True
                 print(f"{self.players[self.current_player]} is getting out of the penalty box")
+                self.in_penalty_box[self.current_player] = False
                 self.places[self.current_player] = self.places[self.current_player] + roll
                 if self.places[self.current_player] > 12:
                     self.places[self.current_player] = self.places[self.current_player] - 12
@@ -109,7 +110,7 @@ class GameOld(IGame):
                     self.current_player = 0
                 return True
         else:
-            print("Answer was corrent!!!!")
+            print("Answer was correct!!!!")
             self.purses[self.current_player] += 1
             print(f"{self.players[self.current_player]} now has {self.purses[self.current_player]} Gold Coins.")
 
