@@ -2,6 +2,9 @@ from typing import List
 from .igame import IGame
 
 class Game(IGame):
+    BOARD_SIZE = 12
+    WINNING_COINS = 6
+
     def __init__(self):
         self.players = []
         self.positions = [0] * 6
@@ -50,8 +53,8 @@ class Game(IGame):
                 self.is_getting_out_of_penalty_box = True
                 print(f"{self.players[self.current_player]} is getting out of the penalty box")
                 self.positions[self.current_player] = self.positions[self.current_player] + roll
-                if self.positions[self.current_player] > 12:
-                    self.positions[self.current_player] = self.positions[self.current_player] - 12
+                if self.positions[self.current_player] > self.BOARD_SIZE:
+                    self.positions[self.current_player] = self.positions[self.current_player] - self.BOARD_SIZE
 
                 print(f"{self.players[self.current_player]}'s new location is {self.positions[self.current_player]}")
                 print(f"The category is {self.current_category()}")
@@ -61,8 +64,8 @@ class Game(IGame):
                 self.is_getting_out_of_penalty_box = False
         else:
             self.positions[self.current_player] = self.positions[self.current_player] + roll
-            if self.positions[self.current_player] > 12:
-                self.positions[self.current_player] = self.positions[self.current_player] - 12
+            if self.positions[self.current_player] > self.BOARD_SIZE:
+                self.positions[self.current_player] = self.positions[self.current_player] - self.BOARD_SIZE
 
             print(f"{self.players[self.current_player]}'s new location is {self.positions[self.current_player]}")
             print(f"The category is {self.current_category()}")
@@ -131,4 +134,4 @@ class Game(IGame):
         return True
 
     def did_player_win(self) -> bool:
-        return not (self.coins[self.current_player] == 6)
+        return not (self.coins[self.current_player] == self.WINNING_COINS)
