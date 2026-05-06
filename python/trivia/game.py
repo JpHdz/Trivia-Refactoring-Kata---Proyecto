@@ -25,7 +25,7 @@ class Game(IGame):
     def create_rock_question(self, index: int) -> str:
         return f"Rock Question {index}"
 
-    def is_playable(self) -> bool:
+    def has_enough_players(self) -> bool:
         return self.how_many_players() >= 2
 
     def add(self, player_name: str) -> bool:
