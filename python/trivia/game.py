@@ -62,6 +62,7 @@ class Game(IGame):
         if roll % 2 != 0:
             self.is_getting_out_of_penalty_box = True
             print(f"{player.name} is getting out of the penalty box")
+            player.in_penalty_box = False
             self._move_player_and_ask_question(player, roll)
         else:
             print(f"{player.name} is not getting out of the penalty box")
