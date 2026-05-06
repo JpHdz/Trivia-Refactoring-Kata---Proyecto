@@ -8,29 +8,32 @@ class Player:
         self.coins = 0
         self.in_penalty_box = False
 
+class QuestionDeck:
+    def __init__(self):
+        self.questions_by_category = {
+            "Pop": [],
+            "Science": [],
+            "Sports": [],
+            "Rock": []
+        }
+        for i in range(50):
+            self.questions_by_category["Pop"].append(f"Pop Question {i}")
+            self.questions_by_category["Science"].append(f"Science Question {i}")
+            self.questions_by_category["Sports"].append(f"Sports Question {i}")
+            self.questions_by_category["Rock"].append(f"Rock Question {i}")
+
+    def next_question(self, category: str) -> str:
+        return self.questions_by_category[category].pop(0)
+
 class Game(IGame):
     BOARD_SIZE = 12
     WINNING_COINS = 6
 
     def __init__(self):
         self.players = []
-
-        self.pop_questions = []
-        self.science_questions = []
-        self.sports_questions = []
-        self.rock_questions = []
-
+        self.deck = QuestionDeck()
         self.current_player = 0
         self.is_getting_out_of_penalty_box = False
-
-        for i in range(50):
-            self.pop_questions.append(f"Pop Question {i}")
-            self.science_questions.append(f"Science Question {i}")
-            self.sports_questions.append(f"Sports Question {i}")
-            self.rock_questions.append(self.create_rock_question(i))
-
-    def create_rock_question(self, index: int) -> str:
-        return f"Rock Question {index}"
 
     def has_enough_players(self) -> bool:
         return self.how_many_players() >= 2
@@ -73,14 +76,7 @@ class Game(IGame):
     def ask_question(self) -> None:
         player = self.players[self.current_player]
         category = self.current_category(player)
-        if category == "Pop":
-            print(self.pop_questions.pop(0))
-        if category == "Science":
-            print(self.science_questions.pop(0))
-        if category == "Sports":
-            print(self.sports_questions.pop(0))
-        if category == "Rock":
-            print(self.rock_questions.pop(0))
+        print(self.deck.next_question(category))
 
     def current_category(self, player: Player) -> str:
         if player.position - 1 == 0: return "Pop"
