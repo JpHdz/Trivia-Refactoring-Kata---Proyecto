@@ -4,7 +4,7 @@ from .igame import IGame
 class Game(IGame):
     def __init__(self):
         self.players = []
-        self.places = [0] * 6
+        self.positions = [0] * 6
         self.purses = [0] * 6
         self.in_penalty_box = [False] * 6
 
@@ -29,7 +29,7 @@ class Game(IGame):
         return self.how_many_players() >= 2
 
     def add(self, player_name: str) -> bool:
-        self.places[self.how_many_players()] = 1
+        self.positions[self.how_many_players()] = 1
         self.purses[self.how_many_players()] = 0
         self.in_penalty_box[self.how_many_players()] = False
         self.players.append(player_name)
@@ -49,22 +49,22 @@ class Game(IGame):
             if roll % 2 != 0:
                 self.is_getting_out_of_penalty_box = True
                 print(f"{self.players[self.current_player]} is getting out of the penalty box")
-                self.places[self.current_player] = self.places[self.current_player] + roll
-                if self.places[self.current_player] > 12:
-                    self.places[self.current_player] = self.places[self.current_player] - 12
+                self.positions[self.current_player] = self.positions[self.current_player] + roll
+                if self.positions[self.current_player] > 12:
+                    self.positions[self.current_player] = self.positions[self.current_player] - 12
 
-                print(f"{self.players[self.current_player]}'s new location is {self.places[self.current_player]}")
+                print(f"{self.players[self.current_player]}'s new location is {self.positions[self.current_player]}")
                 print(f"The category is {self.current_category()}")
                 self.ask_question()
             else:
                 print(f"{self.players[self.current_player]} is not getting out of the penalty box")
                 self.is_getting_out_of_penalty_box = False
         else:
-            self.places[self.current_player] = self.places[self.current_player] + roll
-            if self.places[self.current_player] > 12:
-                self.places[self.current_player] = self.places[self.current_player] - 12
+            self.positions[self.current_player] = self.positions[self.current_player] + roll
+            if self.positions[self.current_player] > 12:
+                self.positions[self.current_player] = self.positions[self.current_player] - 12
 
-            print(f"{self.players[self.current_player]}'s new location is {self.places[self.current_player]}")
+            print(f"{self.players[self.current_player]}'s new location is {self.positions[self.current_player]}")
             print(f"The category is {self.current_category()}")
             self.ask_question()
 
@@ -79,15 +79,15 @@ class Game(IGame):
             print(self.rock_questions.pop(0))
 
     def current_category(self) -> str:
-        if self.places[self.current_player] - 1 == 0: return "Pop"
-        if self.places[self.current_player] - 1 == 4: return "Pop"
-        if self.places[self.current_player] - 1 == 8: return "Pop"
-        if self.places[self.current_player] - 1 == 1: return "Science"
-        if self.places[self.current_player] - 1 == 5: return "Science"
-        if self.places[self.current_player] - 1 == 9: return "Science"
-        if self.places[self.current_player] - 1 == 2: return "Sports"
-        if self.places[self.current_player] - 1 == 6: return "Sports"
-        if self.places[self.current_player] - 1 == 10: return "Sports"
+        if self.positions[self.current_player] - 1 == 0: return "Pop"
+        if self.positions[self.current_player] - 1 == 4: return "Pop"
+        if self.positions[self.current_player] - 1 == 8: return "Pop"
+        if self.positions[self.current_player] - 1 == 1: return "Science"
+        if self.positions[self.current_player] - 1 == 5: return "Science"
+        if self.positions[self.current_player] - 1 == 9: return "Science"
+        if self.positions[self.current_player] - 1 == 2: return "Sports"
+        if self.positions[self.current_player] - 1 == 6: return "Sports"
+        if self.positions[self.current_player] - 1 == 10: return "Sports"
         return "Rock"
 
     def handle_correct_answer(self) -> bool:
