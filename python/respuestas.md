@@ -91,7 +91,7 @@ No completamente. El método de asignación de categorías usa condiciones espec
 
 **Sobre la refactorización:**
 
-- **¿Qué olor de código fue el más difícil de eliminar? ¿Por qué?** El uso de arrays paralelos, ya que tuve varios errores al inicio.
+- **¿Qué olor de código fue el más difícil de eliminar? ¿Por qué?** El separar responsabilidades pues tuve varios bugsillos.
 - **¿Cuántas veces se puso en rojo el test? ¿Qué lo causó?** No las conté, pero fueron varias veces. Fueron más errores que no me leí bien y me despistaba.
 - **¿Qué refactorización manual (no automática del IDE) fue la más arriesgada?** La migración de la lógica de preguntas a la clase `QuestionDeck`, porque requería muchas líneas de código.
 - **¿Cómo podría mejorarse el diseño para que el próximo cambio de requisito sea más fácil?** Manteniendo las responsabilidades bien separadas, usando constantes para valores mágicos y evitando duplicación.
